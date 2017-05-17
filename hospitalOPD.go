@@ -166,7 +166,7 @@ func listAllAppointments(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	fmt.Println("Inside list appointed Patients")
 	var resultBytes []byte
 
-	bytes, err := stub.GetState("patient_Ids")
+	bytes, err := stub.GetState("policy_Ids")
 
 	fmt.Println("Ids recieved", string(bytes))
 	var policyIdHolder POLICY_ID_Holder
