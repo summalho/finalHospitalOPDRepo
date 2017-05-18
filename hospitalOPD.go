@@ -330,62 +330,61 @@ func createAppointment(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 	appointmentsExists := checkIfAppointmentExists(stub, args, "createApp")
 	fmt.Println("appointmentsExists : ", appointmentsExists)
 
-	if !appointmentsExists {
-		fmt.Println("Inside create appointment")
+	fmt.Println("Inside create appointment")
 
-		patientDetails := Patient{}
+	patientDetails := Patient{}
 
-		unavailedBalance, _ := strconv.ParseInt(args[7], 10, 64)
-		claimedAmount, _ := strconv.ParseInt("0", 10, 64)
-		contactNumber, _ := strconv.ParseInt(args[3], 10, 64)
+	unavailedBalance, _ := strconv.ParseInt(args[7], 10, 64)
+	claimedAmount, _ := strconv.ParseInt("0", 10, 64)
+	contactNumber, _ := strconv.ParseInt(args[3], 10, 64)
 
-		patientDetails.PolicyId = args[0]
-		patientDetails.FirstName = args[1]
-		patientDetails.LastName = args[2]
-		patientDetails.Contact_Number = contactNumber
-		patientDetails.Hospital = args[4]
-		patientDetails.City = args[5]
-		patientDetails.AppointmentTime = args[6]
-		patientDetails.UnavailedBalance = unavailedBalance
-		patientDetails.ClaimedAmount = claimedAmount
+	patientDetails.PolicyId = args[0]
+	patientDetails.FirstName = args[1]
+	patientDetails.LastName = args[2]
+	patientDetails.Contact_Number = contactNumber
+	patientDetails.Hospital = args[4]
+	patientDetails.City = args[5]
+	patientDetails.AppointmentTime = args[6]
+	patientDetails.UnavailedBalance = unavailedBalance
+	patientDetails.ClaimedAmount = claimedAmount
 
-		patientDetailsBytes, err := json.Marshal(patientDetails)
+	patientDetailsBytes, err := json.Marshal(patientDetails)
 
-		fmt.Println("Patient Details are : ", string(patientDetailsBytes))
+	fmt.Println("Patient Details are : ", string(patientDetailsBytes))
 
-		if err != nil {
-			return nil, errors.New("Problem while saving Owner Details in BlockChain Network")
+	if err != nil {
+		return nil, errors.New("Problem while saving Owner Details in BlockChain Network")
 
-		}
-
-		err = stub.PutState(patientDetails.PolicyId, patientDetailsBytes)
-
-		//now owner has been added to block chain network, now we have to save the  Id as well
-
-		bytes, err := stub.GetState("policy_Ids")
-
-		var newPolicyId POLICY_ID_Holder
-
-		err = json.Unmarshal(bytes, &newPolicyId)
-
-		if err != nil {
-			return nil, errors.New("error unmarshalling new Policy Id")
-		}
-		newPolicyId.POLICY_IDs = append(newPolicyId.POLICY_IDs, patientDetails.PolicyId)
-
-		bytes, err = json.Marshal(newPolicyId)
-
-		if err != nil {
-			return nil, errors.New("error marshalling new Policy Id")
-		}
-
-		err = stub.PutState("policy_Ids", bytes)
-		fmt.Println("Policy Id Saved is ", string(bytes))
-
-		if err != nil {
-			return nil, errors.New("Unable to put the state")
-		}
 	}
+
+	err = stub.PutState(patientDetails.PolicyId, patientDetailsBytes)
+
+	//now owner has been added to block chain network, now we have to save the  Id as well
+
+	bytes, err := stub.GetState("policy_Ids")
+
+	var newPolicyId POLICY_ID_Holder
+
+	err = json.Unmarshal(bytes, &newPolicyId)
+
+	if err != nil {
+		return nil, errors.New("error unmarshalling new Policy Id")
+	}
+	newPolicyId.POLICY_IDs = append(newPolicyId.POLICY_IDs, patientDetails.PolicyId)
+
+	bytes, err = json.Marshal(newPolicyId)
+
+	if err != nil {
+		return nil, errors.New("error marshalling new Policy Id")
+	}
+
+	err = stub.PutState("policy_Ids", bytes)
+	fmt.Println("Policy Id Saved is ", string(bytes))
+
+	if err != nil {
+		return nil, errors.New("Unable to put the state")
+	}
+
 	return nil, nil
 }
 
