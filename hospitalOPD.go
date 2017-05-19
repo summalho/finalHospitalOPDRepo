@@ -31,7 +31,7 @@ type Patient struct {
 	City             string `json:"city"`
 	FirstName        string `json:"firstName"`
 	LastName         string `json:"lastName"`
-	Contact_Number   int64  `json:"contact_Number"`
+	Mobile           int64  `json:"mobile"`
 	Hospital         string `json:"hospital"`
 	AppointmentTime  string `json:"appointmentTime"`
 	UnavailedBalance int64  `json:"unavailedBalance"`
@@ -39,14 +39,14 @@ type Patient struct {
 }
 
 type Policy struct {
-	FirstName      string `json:"firstName"`
-	LastName       string `json:"lastName"`
-	Address        string `json:"address"`
-	Mobile         int64  `json:"mobile"`
-	PolicyId       string `json:"policyId"`
-	City           string `json:"city"`
-	Pincode        string `json:"pincode"`
-	InitialBalance int64  `json:"initialBalance"`
+	FirstName        string `json:"firstName"`
+	LastName         string `json:"lastName"`
+	Address          string `json:"address"`
+	Mobile           int64  `json:"mobile"`
+	PolicyId         string `json:"policyId"`
+	City             string `json:"city"`
+	Pincode          string `json:"pincode"`
+	UnavailedBalance int64  `json:"unavailedBalance"`
 }
 
 /*type PropertyHistory struct {
@@ -336,12 +336,12 @@ func createAppointment(stub shim.ChaincodeStubInterface, args []string) ([]byte,
 
 	unavailedBalance, _ := strconv.ParseInt(args[7], 10, 64)
 	claimedAmount, _ := strconv.ParseInt("0", 10, 64)
-	contactNumber, _ := strconv.ParseInt(args[3], 10, 64)
+	mobile, _ := strconv.ParseInt(args[3], 10, 64)
 
 	patientDetails.PolicyId = args[0]
 	patientDetails.FirstName = args[1]
 	patientDetails.LastName = args[2]
-	patientDetails.Contact_Number = contactNumber
+	patientDetails.Mobile = mobile
 	patientDetails.Hospital = args[4]
 	patientDetails.City = args[5]
 	patientDetails.AppointmentTime = args[6]
@@ -420,7 +420,7 @@ func createPolicy(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 		policyDetails.PolicyId = args[4]
 		policyDetails.City = args[5]
 		policyDetails.Pincode = args[6]
-		policyDetails.InitialBalance = unavailedBalance
+		policyDetails.UnavailedBalance = unavailedBalance
 
 		policyDetailsBytes, err := json.Marshal(policyDetails)
 
