@@ -106,6 +106,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 
 		return updateBalanceAPI(stub, args)
 	}
+	if function == "registerUser" {
+
+		return registerUser(stub, args)
+	}
 
 	return nil, nil
 }
@@ -124,10 +128,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 
 		return getPolicyDetails(stub, args)
 	}
-	if function == "registerUser" {
 
-		return registerUser(stub, args)
-	}
 	if function == "validateLogin" {
 
 		return validateLogin(stub, args)
@@ -147,12 +148,12 @@ func registerUser(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 
 	fmt.Println(user.Department, user.Password, user.UserName)
 
-	userDetailsBytes, _ := stub.GetState(user.UserName)
+	userDetailsBytes, _ := stub.GetState(args[1])
 
 	fmt.Println("userDetailsBytes = ", string(userDetailsBytes))
 	userstr := string(userDetailsBytes)
 
-	if userstr != "" {
+	if len(userstr) != 0 {
 		fmt.Println("Inside If")
 
 		return []byte("User with username " + string(userDetailsBytes) + "already exists"), nil
@@ -161,9 +162,12 @@ func registerUser(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 
 	userBytes, _ := json.Marshal(&user)
 	fmt.Println("userBytes ", string(userBytes))
-	stub.PutState(user.UserName, userBytes)
+	err := stub.PutState(args[1], userBytes)
 
-	return []byte("User registered Successfully"), nil
+	if err != nil {
+		return []byte("User registered Successfully"), nil
+	}
+	return nil, nil
 }
 
 func validateLogin(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
