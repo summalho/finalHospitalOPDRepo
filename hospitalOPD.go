@@ -145,9 +145,9 @@ func registerUser(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 	user.UserName = args[1]
 	user.Password = args[2]
 
-	userDetailsBytes, err := stub.GetState(user.UserName)
+	userDetailsBytes, _ := stub.GetState(user.UserName)
 
-	if err == nil || userDetailsBytes != nil {
+	if userDetailsBytes != nil {
 		return []byte("User with username " + user.UserName + "already exists"), nil
 	} else {
 		userBytes, _ := json.Marshal(user)
@@ -161,13 +161,13 @@ func validateLogin(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 
 	user := User{}
 
-	userDetailsBytes, err := stub.GetState(args[1])
+	userDetailsBytes, _ := stub.GetState(args[1])
 
-	if err != nil || userDetailsBytes == nil {
+	if userDetailsBytes == nil {
 		return []byte("User with username " + user.UserName + "does not exists"), nil
 	} else {
 
-		err = json.Unmarshal(userDetailsBytes, &user)
+		json.Unmarshal(userDetailsBytes, &user)
 
 		if user.Department == args[0] && user.UserName == args[1] && user.Password == args[2] {
 
