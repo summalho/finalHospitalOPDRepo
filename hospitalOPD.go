@@ -147,6 +147,9 @@ func registerUser(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 
 	userDetailsBytes, err := stub.GetState(user.UserName)
 
+	fmt.Println("err = ", err)
+	fmt.Println("userDetailsBytes = ", string(userDetailsBytes))
+
 	if err == nil {
 		return []byte("User with username " + string(userDetailsBytes) + "already exists"), nil
 	} else {
