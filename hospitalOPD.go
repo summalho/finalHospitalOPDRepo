@@ -145,14 +145,20 @@ func registerUser(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 	user.UserName = args[1]
 	user.Password = args[2]
 
+	fmt.Println(user.Department, user.Password, user.UserName)
+
 	userDetailsBytes, _ := stub.GetState(user.UserName)
 
 	fmt.Println("userDetailsBytes = ", string(userDetailsBytes))
 	userstr := string(userDetailsBytes)
 
 	if userstr != "" {
+		fmt.Println("Inside If")
+
 		return []byte("User with username " + string(userDetailsBytes) + "already exists"), nil
 	}
+	fmt.Println("Inside else")
+
 	userBytes, _ := json.Marshal(user)
 	stub.PutState(user.UserName, userBytes)
 
