@@ -159,7 +159,8 @@ func registerUser(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 	}
 	fmt.Println("Inside else")
 
-	userBytes, _ := json.Marshal(user)
+	userBytes, _ := json.Marshal(&user)
+	fmt.Println("userBytes ", string(userBytes))
 	stub.PutState(user.UserName, userBytes)
 
 	return []byte("User registered Successfully"), nil
